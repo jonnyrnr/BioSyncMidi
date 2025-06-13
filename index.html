@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrainWave Music Therapy</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            padding: 20px; 
+            text-align: center;
+        }
+        .button { 
+            background: #4ecdc4; 
+            border: none; 
+            padding: 15px 30px; 
+            color: white; 
+            border-radius: 25px; 
+            margin: 10px; 
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .card { 
+            background: rgba(255,255,255,0.1); 
+            padding: 20px; 
+            margin: 20px; 
+            border-radius: 15px; 
+        }
+    </style>
+</head>
+<body>
+    <h1>🧠 BrainWave Music Therapy</h1>
+    <p>© 2024 Jonathan Wiese @soniscapeMedia</p>
+    
+    <div class="card">
+        <h3>Audio Engine</h3>
+        <button class="button" onclick="initAudio()">Initialize Audio Engine</button>
+        <button class="button" onclick="playSound()">Play Test Sound</button>
+        <div id="status">Ready to initialize</div>
+    </div>
+
+    <script>
+        let audioContext = null;
+        
+        async function initAudio() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                document.getElementById('status').textContent = 'Audio Engine Initialized ✓';
+                alert('Audio engine working! This proves the app can run in Termux.');
+            } catch (error) {
+                document.getElementById('status').textContent = 'Failed to initialize';
+                alert('Error: ' + error.message);
+            }
+        }
+        
+        function playSound() {
+            if (!audioContext) {
+                alert('Please initialize audio engine first');
+                return;
+            }
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 1);
+            
+            alert('Sound played! The audio engine is working.');
+        }
+    </script>
+</body>
+</html>
+EOF
